@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 
 const Filme = mongoose.model("Filme", {
-  title: String,
+  title: {
+    type: String,
+    required: true
+  },
   authors: Array,
   year: Number,
   description: Object,

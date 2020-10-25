@@ -1,13 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const Filme = require("../models/filme");
-router.get("/", (req, res) => {
+
+router.get("/", async (req, res) => {
+  try {
+    //find{} para filtros
+    const filmes = await Filme.find({});
+    res.json({ error: false, filmes: filmes });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
   //regra negocio
-  res.json({ menssage: "Todos os registros" });
 });
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({ menssage: `buscar por id: ${id}` });
+
+//id
+router.get("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const filme = await Filme.findById(id);
+    res.json({ error: false, filme });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
 });
 
 router.post("/", async (req, res) => {
@@ -20,9 +34,27 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({ mensage: `atualizar registro com id ${id}` });
+router.put("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const novo_filme = req.body;
+    const filme = await Filme.findByIdAndUpdate(id, novo_filme);
+
+    //resposta
+    res.json({ error: false, filme });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const deleted = await Filme.findByIdAndDelete(id);
+    res.json({ error: false });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
 });
 
 module.exports = router;
